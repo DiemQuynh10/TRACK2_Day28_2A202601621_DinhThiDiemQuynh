@@ -35,24 +35,19 @@ máy dùng chung.
 
 ## Kiến trúc và 10 điểm kết nối
 
-```mermaid
-flowchart LR
-    C[Client] -->|IP08 HTTP + request ID| G[Envoy Gateway]
-    G --> A[FastAPI]
-    A -->|IP01 event + key + headers| K[Kafka]
-    K -->|IP02 consume + retry/DLQ| AF[Airflow]
-    AF -->|IP03 replay-safe MERGE| D[Delta Lake]
-    D -->|IP04 materialize| F[Feast]
-    D -->|IP05 index| Q[Qdrant]
-    D -->|IP06 release provenance| M[MLflow]
-    A --> F
-    A --> Q
-    A --> M
-    A -->|IP07 OpenAI-compatible call| V[vLLM]
-    A --> G
-    K & AF & D & F & Q & M & V & G -->|IP09 metrics| P[Prometheus + Grafana]
-    G & A & K & AF & F & Q & M & V -->|IP10 trace context| O[OTel + Jaeger]
-```
+![Sơ đồ kiến trúc trực quan của bài thực hành](docs/images/lab28-architecture-overview.png)
+
+Đọc ảnh theo ba vùng màu:
+
+1. **Luồng chính:** yêu cầu đi từ người dùng qua Envoy, FastAPI, Kafka, Airflow
+   rồi được ghi vào Delta Lake.
+2. **Dữ liệu và mô hình:** Delta cung cấp dữ liệu cho Feast, Qdrant và MLflow;
+   FastAPI gọi vLLM để tạo câu trả lời.
+3. **Giám sát:** Prometheus/Grafana theo dõi số liệu, còn
+   OpenTelemetry/Jaeger giúp lần theo một yêu cầu từ đầu đến cuối.
+
+Bạn chưa cần nhớ ngay mọi công nghệ. Hãy bắt đầu bằng việc chỉ theo các mũi tên
+IP01–IP10; mỗi mũi tên là một điều cần kiểm tra và giải thích khi trình bày.
 
 Danh sách 10 yêu cầu dùng để kiểm tra kết quả nằm ở
 [`contracts/integration-matrix.yaml`](contracts/integration-matrix.yaml). Mô tả

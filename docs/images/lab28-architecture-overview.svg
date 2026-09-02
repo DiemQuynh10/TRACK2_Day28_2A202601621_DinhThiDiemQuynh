@@ -1,0 +1,190 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="1050" viewBox="0 0 1600 1050" role="img" aria-labelledby="title description">
+  <title id="title">Kiến trúc bài thực hành Day 28 Track 2</title>
+  <desc id="description">Sơ đồ trực quan mười điểm kết nối từ người dùng qua Envoy, FastAPI, Kafka, Airflow, Delta Lake, Feast, Qdrant, MLflow, vLLM và hệ thống giám sát.</desc>
+
+  <defs>
+    <linearGradient id="page" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#f8fbff"/>
+      <stop offset="1" stop-color="#eef4ff"/>
+    </linearGradient>
+    <linearGradient id="access" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0f6fff"/>
+      <stop offset="1" stop-color="#0054cf"/>
+    </linearGradient>
+    <linearGradient id="pipeline" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#ff9d35"/>
+      <stop offset="1" stop-color="#ef6c00"/>
+    </linearGradient>
+    <linearGradient id="data" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#7c5cff"/>
+      <stop offset="1" stop-color="#5835d6"/>
+    </linearGradient>
+    <linearGradient id="model" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#e84ba5"/>
+      <stop offset="1" stop-color="#b82d83"/>
+    </linearGradient>
+    <linearGradient id="observe" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#13a89e"/>
+      <stop offset="1" stop-color="#08756f"/>
+    </linearGradient>
+    <filter id="shadow" x="-20%" y="-30%" width="140%" height="170%">
+      <feDropShadow dx="0" dy="8" stdDeviation="10" flood-color="#15315b" flood-opacity="0.15"/>
+    </filter>
+    <marker id="arrow-blue" markerWidth="12" markerHeight="12" refX="9" refY="6" orient="auto">
+      <path d="M0 0 L12 6 L0 12 Z" fill="#1768e5"/>
+    </marker>
+    <marker id="arrow-orange" markerWidth="12" markerHeight="12" refX="9" refY="6" orient="auto">
+      <path d="M0 0 L12 6 L0 12 Z" fill="#e97716"/>
+    </marker>
+    <marker id="arrow-purple" markerWidth="12" markerHeight="12" refX="9" refY="6" orient="auto">
+      <path d="M0 0 L12 6 L0 12 Z" fill="#6a49df"/>
+    </marker>
+    <marker id="arrow-pink" markerWidth="12" markerHeight="12" refX="9" refY="6" orient="auto">
+      <path d="M0 0 L12 6 L0 12 Z" fill="#c5368d"/>
+    </marker>
+    <marker id="arrow-teal" markerWidth="12" markerHeight="12" refX="9" refY="6" orient="auto">
+      <path d="M0 0 L12 6 L0 12 Z" fill="#0b8e86"/>
+    </marker>
+    <style>
+      .font { font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif; }
+      .node-title { font-size: 24px; font-weight: 750; fill: #ffffff; }
+      .node-subtitle { font-size: 15px; font-weight: 500; fill: #ffffff; opacity: 0.9; }
+      .section { font-size: 15px; font-weight: 800; letter-spacing: 2px; }
+      .ip-text { font-size: 14px; font-weight: 800; fill: #ffffff; }
+      .arrow-note { font-size: 14px; font-weight: 650; fill: #334b70; }
+      .body { font-size: 18px; font-weight: 520; fill: #263b5d; }
+    </style>
+  </defs>
+
+  <rect width="1600" height="1050" rx="32" fill="url(#page)"/>
+  <circle cx="1510" cy="58" r="180" fill="#dce8ff" opacity="0.55"/>
+  <circle cx="70" cy="1000" r="210" fill="#dff8f5" opacity="0.65"/>
+
+  <g class="font">
+    <text x="70" y="72" font-size="38" font-weight="820" fill="#132b50">Một yêu cầu đi qua nền tảng AI như thế nào?</text>
+    <text x="70" y="110" font-size="20" font-weight="520" fill="#547096">Đọc từ trái sang phải, sau đó đi xuống vùng dữ liệu và giám sát.</text>
+
+    <text x="70" y="165" class="section" fill="#1768e5">LUỒNG CHÍNH — DỮ LIỆU ĐI TỪ TRÁI SANG PHẢI</text>
+    <rect x="55" y="182" width="1490" height="190" rx="26" fill="#ffffff" stroke="#d9e5f8" stroke-width="2"/>
+
+    <!-- Main nodes -->
+    <g filter="url(#shadow)">
+      <rect x="80" y="225" width="190" height="105" rx="20" fill="url(#access)"/>
+      <rect x="335" y="225" width="205" height="105" rx="20" fill="url(#access)"/>
+      <rect x="605" y="225" width="205" height="105" rx="20" fill="url(#access)"/>
+      <rect x="875" y="225" width="190" height="105" rx="20" fill="url(#pipeline)"/>
+      <rect x="1130" y="225" width="190" height="105" rx="20" fill="url(#pipeline)"/>
+      <rect x="1385" y="225" width="135" height="105" rx="20" fill="url(#data)"/>
+    </g>
+
+    <text x="175" y="270" text-anchor="middle" class="node-title">Người dùng</text>
+    <text x="175" y="298" text-anchor="middle" class="node-subtitle">gửi câu hỏi / dữ liệu</text>
+    <text x="438" y="270" text-anchor="middle" class="node-title">Envoy</text>
+    <text x="438" y="298" text-anchor="middle" class="node-subtitle">cổng truy cập</text>
+    <text x="708" y="270" text-anchor="middle" class="node-title">FastAPI</text>
+    <text x="708" y="298" text-anchor="middle" class="node-subtitle">xử lý yêu cầu</text>
+    <text x="970" y="270" text-anchor="middle" class="node-title">Kafka</text>
+    <text x="970" y="298" text-anchor="middle" class="node-subtitle">hàng đợi dữ liệu</text>
+    <text x="1225" y="270" text-anchor="middle" class="node-title">Airflow</text>
+    <text x="1225" y="298" text-anchor="middle" class="node-subtitle">điều phối công việc</text>
+    <text x="1452" y="270" text-anchor="middle" class="node-title">Delta</text>
+    <text x="1452" y="298" text-anchor="middle" class="node-subtitle">lưu dữ liệu</text>
+
+    <!-- Main arrows -->
+    <path d="M270 277 H326" stroke="#1768e5" stroke-width="5" fill="none" marker-end="url(#arrow-blue)"/>
+    <path d="M540 277 H596" stroke="#1768e5" stroke-width="5" fill="none" marker-end="url(#arrow-blue)"/>
+    <path d="M810 277 H866" stroke="#e97716" stroke-width="5" fill="none" marker-end="url(#arrow-orange)"/>
+    <path d="M1065 277 H1121" stroke="#e97716" stroke-width="5" fill="none" marker-end="url(#arrow-orange)"/>
+    <path d="M1320 277 H1376" stroke="#6a49df" stroke-width="5" fill="none" marker-end="url(#arrow-purple)"/>
+
+    <!-- IP badges main -->
+    <g>
+      <rect x="276" y="199" width="96" height="28" rx="14" fill="#1768e5"/>
+      <text x="324" y="218" text-anchor="middle" class="ip-text">IP08</text>
+      <text x="438" y="352" text-anchor="middle" class="arrow-note">định tuyến + kiểm tra sức khỏe</text>
+
+      <rect x="829" y="199" width="96" height="28" rx="14" fill="#e97716"/>
+      <text x="877" y="218" text-anchor="middle" class="ip-text">IP01</text>
+      <text x="843" y="352" text-anchor="middle" class="arrow-note">sự kiện + khóa chống trùng</text>
+
+      <rect x="1084" y="199" width="96" height="28" rx="14" fill="#e97716"/>
+      <text x="1132" y="218" text-anchor="middle" class="ip-text">IP02</text>
+      <text x="1100" y="352" text-anchor="middle" class="arrow-note">đọc, thử lại, hàng lỗi</text>
+
+      <rect x="1339" y="199" width="96" height="28" rx="14" fill="#6a49df"/>
+      <text x="1387" y="218" text-anchor="middle" class="ip-text">IP03</text>
+      <text x="1387" y="352" text-anchor="middle" class="arrow-note">ghi không trùng</text>
+    </g>
+
+    <!-- Data/model zone -->
+    <text x="70" y="422" class="section" fill="#6a49df">DỮ LIỆU VÀ MÔ HÌNH — API DÙNG CÁC KẾT QUẢ NÀY ĐỂ TRẢ LỜI</text>
+    <rect x="55" y="440" width="1490" height="260" rx="26" fill="#ffffff" stroke="#e1dcfb" stroke-width="2"/>
+
+    <g filter="url(#shadow)">
+      <rect x="115" y="505" width="245" height="115" rx="22" fill="url(#model)"/>
+      <rect x="530" y="505" width="235" height="115" rx="22" fill="url(#data)"/>
+      <rect x="855" y="505" width="235" height="115" rx="22" fill="url(#data)"/>
+      <rect x="1180" y="505" width="235" height="115" rx="22" fill="url(#data)"/>
+    </g>
+
+    <text x="238" y="552" text-anchor="middle" class="node-title">vLLM</text>
+    <text x="238" y="581" text-anchor="middle" class="node-subtitle">mô hình tạo câu trả lời</text>
+    <text x="648" y="552" text-anchor="middle" class="node-title">Feast</text>
+    <text x="648" y="581" text-anchor="middle" class="node-subtitle">đặc trưng trực tuyến</text>
+    <text x="973" y="552" text-anchor="middle" class="node-title">Qdrant</text>
+    <text x="973" y="581" text-anchor="middle" class="node-subtitle">tìm nội dung liên quan</text>
+    <text x="1298" y="552" text-anchor="middle" class="node-title">MLflow</text>
+    <text x="1298" y="581" text-anchor="middle" class="node-subtitle">phiên bản mô hình</text>
+
+    <!-- API to vLLM -->
+    <path d="M675 330 C650 395 390 408 270 496" stroke="#c5368d" stroke-width="5" fill="none" marker-end="url(#arrow-pink)"/>
+    <rect x="405" y="392" width="96" height="28" rx="14" fill="#c5368d"/>
+    <text x="453" y="411" text-anchor="middle" class="ip-text">IP07</text>
+    <text x="360" y="444" class="arrow-note">gọi mô hình thật</text>
+
+    <!-- Delta fan-out -->
+    <path d="M1452 330 C1452 420 765 425 676 496" stroke="#6a49df" stroke-width="4" fill="none" marker-end="url(#arrow-purple)"/>
+    <path d="M1452 330 C1452 420 1060 430 1000 496" stroke="#6a49df" stroke-width="4" fill="none" marker-end="url(#arrow-purple)"/>
+    <path d="M1452 330 C1452 425 1328 438 1310 496" stroke="#6a49df" stroke-width="4" fill="none" marker-end="url(#arrow-purple)"/>
+
+    <rect x="705" y="455" width="96" height="28" rx="14" fill="#6a49df"/>
+    <text x="753" y="474" text-anchor="middle" class="ip-text">IP04</text>
+    <rect x="1022" y="455" width="96" height="28" rx="14" fill="#6a49df"/>
+    <text x="1070" y="474" text-anchor="middle" class="ip-text">IP05</text>
+    <rect x="1324" y="455" width="96" height="28" rx="14" fill="#6a49df"/>
+    <text x="1372" y="474" text-anchor="middle" class="ip-text">IP06</text>
+
+    <text x="648" y="655" text-anchor="middle" class="arrow-note">Delta → Feast: cập nhật đặc trưng</text>
+    <text x="973" y="655" text-anchor="middle" class="arrow-note">Delta → Qdrant: lập chỉ mục</text>
+    <text x="1298" y="655" text-anchor="middle" class="arrow-note">Delta → MLflow: phát hành phiên bản</text>
+
+    <!-- Observability zone -->
+    <text x="70" y="754" class="section" fill="#0b8e86">GIÁM SÁT — BAO PHỦ TOÀN BỘ HỆ THỐNG</text>
+    <rect x="55" y="772" width="1490" height="205" rx="26" fill="#ffffff" stroke="#ccece9" stroke-width="2"/>
+
+    <g filter="url(#shadow)">
+      <rect x="110" y="824" width="430" height="105" rx="22" fill="url(#observe)"/>
+      <rect x="620" y="824" width="430" height="105" rx="22" fill="url(#observe)"/>
+    </g>
+    <text x="325" y="868" text-anchor="middle" class="node-title">Prometheus + Grafana</text>
+    <text x="325" y="898" text-anchor="middle" class="node-subtitle">số lượng, tốc độ, lỗi và độ trễ</text>
+    <text x="835" y="868" text-anchor="middle" class="node-title">OpenTelemetry + Jaeger</text>
+    <text x="835" y="898" text-anchor="middle" class="node-subtitle">theo dõi một yêu cầu từ đầu đến cuối</text>
+
+    <path d="M475 700 C450 755 340 760 325 815" stroke="#0b8e86" stroke-width="4" stroke-dasharray="10 9" fill="none" marker-end="url(#arrow-teal)"/>
+    <path d="M900 700 C900 755 850 765 835 815" stroke="#0b8e86" stroke-width="4" stroke-dasharray="10 9" fill="none" marker-end="url(#arrow-teal)"/>
+    <rect x="380" y="735" width="96" height="28" rx="14" fill="#0b8e86"/>
+    <text x="428" y="754" text-anchor="middle" class="ip-text">IP09</text>
+    <rect x="804" y="735" width="96" height="28" rx="14" fill="#0b8e86"/>
+    <text x="852" y="754" text-anchor="middle" class="ip-text">IP10</text>
+
+    <!-- Reading guide -->
+    <rect x="1115" y="807" width="380" height="137" rx="20" fill="#f2f7ff" stroke="#cbdcf8" stroke-width="2"/>
+    <text x="1140" y="839" font-size="18" font-weight="800" fill="#17365f">Cách đọc sơ đồ</text>
+    <text x="1140" y="870" class="body"><tspan font-weight="800" fill="#1768e5">1</tspan> Yêu cầu vào qua Envoy → API</text>
+    <text x="1140" y="898" class="body"><tspan font-weight="800" fill="#e97716">2</tspan> Dữ liệu chạy Kafka → Airflow → Delta</text>
+    <text x="1140" y="926" class="body"><tspan font-weight="800" fill="#6a49df">3</tspan> API dùng dữ liệu, mô hình và giám sát</text>
+
+    <text x="70" y="1015" font-size="16" font-weight="560" fill="#60779a">Mỗi nhãn IP là một điểm kết nối cần giải thích và chứng minh trong phần trình bày.</text>
+  </g>
+</svg>
