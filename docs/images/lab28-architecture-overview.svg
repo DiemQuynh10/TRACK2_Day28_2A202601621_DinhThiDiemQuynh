@@ -117,7 +117,7 @@
     </g>
 
     <!-- Data/model zone -->
-    <text x="70" y="422" class="section" fill="#6a49df">DỮ LIỆU VÀ MÔ HÌNH — API DÙNG CÁC KẾT QUẢ NÀY ĐỂ TRẢ LỜI</text>
+    <text x="70" y="422" class="section" fill="#6a49df">DỮ LIỆU VÀ MÔ HÌNH</text>
     <rect x="55" y="440" width="1490" height="260" rx="26" fill="#ffffff" stroke="#e1dcfb" stroke-width="2"/>
 
     <g filter="url(#shadow)">
@@ -140,7 +140,6 @@
     <path d="M675 330 C650 395 390 408 270 496" stroke="#c5368d" stroke-width="5" fill="none" marker-end="url(#arrow-pink)"/>
     <rect x="405" y="392" width="96" height="28" rx="14" fill="#c5368d"/>
     <text x="453" y="411" text-anchor="middle" class="ip-text">IP07</text>
-    <text x="360" y="444" class="arrow-note">gọi mô hình thật</text>
 
     <!-- Delta fan-out -->
     <path d="M1452 330 C1452 420 765 425 676 496" stroke="#6a49df" stroke-width="4" fill="none" marker-end="url(#arrow-purple)"/>
@@ -159,7 +158,7 @@
     <text x="1298" y="655" text-anchor="middle" class="arrow-note">Delta → MLflow: phát hành phiên bản</text>
 
     <!-- Observability zone -->
-    <text x="70" y="754" class="section" fill="#0b8e86">GIÁM SÁT — BAO PHỦ TOÀN BỘ HỆ THỐNG</text>
+    <text x="70" y="754" class="section" fill="#0b8e86">GIÁM SÁT HỆ THỐNG</text>
     <rect x="55" y="772" width="1490" height="205" rx="26" fill="#ffffff" stroke="#ccece9" stroke-width="2"/>
 
     <g filter="url(#shadow)">
