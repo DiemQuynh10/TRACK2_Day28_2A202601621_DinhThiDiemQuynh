@@ -138,8 +138,8 @@
 
     <!-- API to vLLM -->
     <path d="M675 330 C650 395 390 408 270 496" stroke="#c5368d" stroke-width="5" fill="none" marker-end="url(#arrow-pink)"/>
-    <rect x="405" y="392" width="96" height="28" rx="14" fill="#c5368d"/>
-    <text x="453" y="411" text-anchor="middle" class="ip-text">IP07</text>
+    <rect x="525" y="356" width="96" height="28" rx="14" fill="#c5368d"/>
+    <text x="573" y="375" text-anchor="middle" class="ip-text">IP07</text>
 
     <!-- Delta fan-out -->
     <path d="M1452 330 C1452 420 765 425 676 496" stroke="#6a49df" stroke-width="4" fill="none" marker-end="url(#arrow-purple)"/>
@@ -172,10 +172,10 @@
 
     <path d="M475 700 C450 755 340 760 325 815" stroke="#0b8e86" stroke-width="4" stroke-dasharray="10 9" fill="none" marker-end="url(#arrow-teal)"/>
     <path d="M900 700 C900 755 850 765 835 815" stroke="#0b8e86" stroke-width="4" stroke-dasharray="10 9" fill="none" marker-end="url(#arrow-teal)"/>
-    <rect x="380" y="735" width="96" height="28" rx="14" fill="#0b8e86"/>
-    <text x="428" y="754" text-anchor="middle" class="ip-text">IP09</text>
-    <rect x="804" y="735" width="96" height="28" rx="14" fill="#0b8e86"/>
-    <text x="852" y="754" text-anchor="middle" class="ip-text">IP10</text>
+    <rect x="405" y="782" width="96" height="28" rx="14" fill="#0b8e86"/>
+    <text x="453" y="801" text-anchor="middle" class="ip-text">IP09</text>
+    <rect x="804" y="782" width="96" height="28" rx="14" fill="#0b8e86"/>
+    <text x="852" y="801" text-anchor="middle" class="ip-text">IP10</text>
 
     <!-- Reading guide -->
     <rect x="1115" y="807" width="380" height="137" rx="20" fill="#f2f7ff" stroke="#cbdcf8" stroke-width="2"/>
