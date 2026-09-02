@@ -114,7 +114,7 @@ def grafana() -> tuple[str, tuple[str, str]]:
 
 
 @pytest.fixture(scope="session")
-def stack_is_up(settings: Settings, airflow: Airflow, prometheus: Prometheus) -> None:
+def stack_is_up(settings: Settings, prometheus: Prometheus) -> None:
     """Fail the whole session, once, if the platform is not up.
 
     Without this every test fails separately with its own connection error and
@@ -123,6 +123,7 @@ def stack_is_up(settings: Settings, airflow: Airflow, prometheus: Prometheus) ->
     """
     from lab28_platform.event_bus import broker_metadata
 
+    airflow_url = stack.env("LAB28_AIRFLOW_URL", "http://localhost:8082")
     checks: dict[str, Any] = {
         f"API {settings.api_url}/health": lambda: httpx.get(
             f"{settings.api_url}/health", timeout=5.0
@@ -133,7 +134,9 @@ def stack_is_up(settings: Settings, airflow: Airflow, prometheus: Prometheus) ->
         f"Kafka {settings.kafka.bootstrap_servers}": lambda: broker_metadata(
             settings.kafka, timeout=5.0
         ),
-        f"Airflow {airflow.base_url}": airflow.health,
+        f"Airflow {airflow_url}": lambda: httpx.get(
+            f"{airflow_url.rstrip('/')}/api/v2/monitor/health", timeout=5.0
+        ).raise_for_status(),
         f"Prometheus {prometheus.base_url}": prometheus.targets,
     }
 
