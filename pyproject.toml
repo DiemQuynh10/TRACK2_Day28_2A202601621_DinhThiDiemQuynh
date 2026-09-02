@@ -74,7 +74,7 @@ dev = [
 # Everything the live integration journeys need to talk to the running stack.
 integration = [
   "pytest==9.1.1",
-  "pytest-timeout==2.5.0",
+  "pytest-timeout==2.4.0",
   "qdrant-client==1.19.0",
   "deltalake==1.6.3",
   "mlflow==3.15.2",
