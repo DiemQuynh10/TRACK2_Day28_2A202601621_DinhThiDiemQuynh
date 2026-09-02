@@ -1,0 +1,49 @@
+{
+  "annotations": {"list": []},
+  "editable": false,
+  "panels": [
+    {
+      "datasource": {"type": "prometheus", "uid": "prometheus"},
+      "fieldConfig": {"defaults": {"unit": "reqps"}, "overrides": []},
+      "gridPos": {"h": 8, "w": 12, "x": 0, "y": 0},
+      "id": 1,
+      "targets": [{"expr": "sum(rate(lab28_requests_total[1m]))", "legendFormat": "requests/s"}],
+      "title": "Request rate",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {"type": "prometheus", "uid": "prometheus"},
+      "fieldConfig": {"defaults": {"unit": "percentunit"}, "overrides": []},
+      "gridPos": {"h": 8, "w": 12, "x": 12, "y": 0},
+      "id": 2,
+      "targets": [{"expr": "sum(rate(lab28_requests_total{status=~\"5..\"}[5m])) / clamp_min(sum(rate(lab28_requests_total[5m])), 1)", "legendFormat": "error ratio"}],
+      "title": "Errors",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {"type": "prometheus", "uid": "prometheus"},
+      "fieldConfig": {"defaults": {"unit": "s"}, "overrides": []},
+      "gridPos": {"h": 8, "w": 12, "x": 0, "y": 8},
+      "id": 3,
+      "targets": [{"expr": "histogram_quantile(0.95, sum by (le) (rate(lab28_request_seconds_bucket[5m])))", "legendFormat": "p95"}],
+      "title": "Request duration",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {"type": "prometheus", "uid": "prometheus"},
+      "fieldConfig": {"defaults": {}, "overrides": []},
+      "gridPos": {"h": 8, "w": 12, "x": 12, "y": 8},
+      "id": 4,
+      "targets": [{"expr": "lab28_consumer_lag", "legendFormat": "{{topic}}/{{partition}}"}],
+      "title": "Pipeline saturation / lag",
+      "type": "timeseries"
+    }
+  ],
+  "schemaVersion": 42,
+  "tags": ["lab28", "golden-signals"],
+  "templating": {"list": []},
+  "time": {"from": "now-30m", "to": "now"},
+  "title": "Lab 28 Platform Overview",
+  "uid": "lab28-platform",
+  "version": 1
+}

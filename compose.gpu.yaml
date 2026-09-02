@@ -1,0 +1,32 @@
+services:
+  vllm:
+    image: vllm/vllm-openai:v0.28.0
+    profiles: ["gpu"]
+    command:
+      - --model
+      - ${LAB28_VLLM_MODEL_ID:-Qwen/Qwen3-1.7B}
+      - --host
+      - 0.0.0.0
+      - --port
+      - "8000"
+      - --dtype
+      - auto
+    ports:
+      - "${LAB28_VLLM_PORT:-8001}:8000"
+    volumes:
+      - huggingface-cache:/root/.cache/huggingface
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
+
+  api:
+    environment:
+      LAB28_VLLM_BASE_URL: http://vllm:8000/v1
+      LAB28_VLLM_REQUIRE_REAL: "true"
+
+volumes:
+  huggingface-cache:

@@ -1,0 +1,76 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: lab28-api
+  namespace: lab28
+  labels: &labels
+    app.kubernetes.io/name: lab28-api
+    app.kubernetes.io/part-of: lab28-platform
+spec:
+  replicas: 2
+  selector:
+    matchLabels: *labels
+  template:
+    metadata:
+      labels: *labels
+    spec:
+      serviceAccountName: lab28-api
+      securityContext:
+        runAsNonRoot: true
+        seccompProfile:
+          type: RuntimeDefault
+      containers:
+        - name: api
+          image: ghcr.io/vinuni-ai20k/day28-platform-api:3.0.0
+          imagePullPolicy: IfNotPresent
+          args: ["lab28", "serve", "--host", "0.0.0.0", "--port", "8000"]
+          envFrom:
+            - configMapRef:
+                name: lab28-api-config
+          ports:
+            - name: http
+              containerPort: 8000
+          readinessProbe:
+            httpGet:
+              path: /ready
+              port: http
+            periodSeconds: 10
+            failureThreshold: 3
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: http
+            periodSeconds: 20
+            failureThreshold: 3
+          startupProbe:
+            httpGet:
+              path: /health
+              port: http
+            periodSeconds: 5
+            failureThreshold: 24
+          resources:
+            requests:
+              cpu: 200m
+              memory: 256Mi
+            limits:
+              cpu: "1"
+              memory: 1Gi
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop: ["ALL"]
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: lab28-api
+  namespace: lab28
+spec:
+  selector:
+    app.kubernetes.io/name: lab28-api
+    app.kubernetes.io/part-of: lab28-platform
+  ports:
+    - name: http
+      port: 8000
+      targetPort: http

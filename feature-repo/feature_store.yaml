@@ -1,0 +1,17 @@
+project: lab28
+provider: local
+registry: ../.lab28/feast/registry.db
+offline_store:
+  type: file
+online_store:
+  type: sqlite
+  path: ../.lab28/feast/online_store.db
+entity_key_serialization_version: 3
+feature_server:
+  type: local
+  metrics:
+    enabled: true
+    resource: true
+    request: true
+    online_features: true
+    materialization: true

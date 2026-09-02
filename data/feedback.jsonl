@@ -1,0 +1,12 @@
+{"asker_id":"asker-001","text":"Dịch vụ trả lời rất nhanh và trích dẫn đúng tài liệu tôi cần","rating":5,"locale":"vi","label":"positive"}
+{"asker_id":"asker-001","text":"Phần bằng chứng kèm theo câu trả lời giúp tôi kiểm chứng lại dễ dàng","rating":5,"locale":"vi","label":"positive"}
+{"asker_id":"asker-002","text":"Kết quả truy hồi chính xác và hữu ích cho câu hỏi về kiến trúc","rating":4,"locale":"vi","label":"positive"}
+{"asker_id":"asker-002","text":"Trải nghiệm ổn định, nhưng phần giải thích ngân sách độ trễ hơi khó hiểu","rating":3,"locale":"vi","label":"neutral"}
+{"asker_id":"asker-003","text":"Câu trả lời đúng nhưng chậm hơn mong đợi vào giờ cao điểm","rating":3,"locale":"vi","label":"neutral"}
+{"asker_id":"asker-003","text":"Tôi không tìm thấy hướng dẫn quay lui bản phát hành trong tài liệu","rating":2,"locale":"vi","label":"negative"}
+{"asker_id":"asker-004","text":"Phản hồi chậm và thỉnh thoảng báo lỗi phụ thuộc không sẵn sàng","rating":2,"locale":"vi","label":"negative"}
+{"asker_id":"asker-004","text":"Giao diện trả về khó đọc vì phần bằng chứng quá dài","rating":2,"locale":"vi","label":"negative"}
+{"asker_id":"asker-005","text":"Kết quả sai khi tôi hỏi về cổng số liệu của kho đặc trưng","rating":1,"locale":"vi","label":"negative"}
+{"asker_id":"asker-005","text":"Sau khi lập chỉ mục lại thì câu trả lời đã chính xác trở lại","rating":4,"locale":"vi","label":"positive"}
+{"asker_id":"asker-006","text":"The grounded answer cited the right document and was easy to verify","rating":5,"locale":"en","label":"positive"}
+{"asker_id":"asker-006","text":"Degraded responses are clearly labelled, which makes debugging much easier","rating":4,"locale":"en","label":"positive"}

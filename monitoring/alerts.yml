@@ -1,0 +1,21 @@
+groups:
+  - name: lab28-slo
+    rules:
+      - alert: Lab28ApiUnavailable
+        expr: up{job="lab28-api"} == 0
+        for: 30s
+        labels:
+          severity: critical
+        annotations:
+          summary: Lab 28 API is not being scraped
+          description: Check the API container and its Kafka, Qdrant and MLflow dependencies.
+      - alert: Lab28HighErrorRatio
+        expr: >-
+          sum(rate(lab28_requests_total{status=~"5.."}[5m]))
+          / clamp_min(sum(rate(lab28_requests_total[5m])), 1) > 0.05
+        for: 2m
+        labels:
+          severity: warning
+        annotations:
+          summary: More than 5 percent of Lab 28 requests are failing
+          description: Use the trace ID and readiness breakdown to identify the failing boundary.
