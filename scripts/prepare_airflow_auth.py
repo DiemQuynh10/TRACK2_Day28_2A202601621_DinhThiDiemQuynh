@@ -12,7 +12,10 @@ def ensure_password_file(path: Path) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     if path.is_file():
         return
-    path.write_text(json.dumps({"airflow": secrets.token_urlsafe(24)}), encoding="utf-8")
+    path.write_text(
+        json.dumps({"airflow": secrets.token_urlsafe(24)}),
+        encoding="utf-8",
+    )
     path.chmod(0o600)
 
 

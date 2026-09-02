@@ -1,16 +1,122 @@
+[build-system]
+requires = ["hatchling==1.27.0"]
+build-backend = "hatchling.build"
+
 [project]
-name = "day28-platform-student"
-version = "0.1.0"
+name = "lab28-platform"
+version = "3.0.0"
+description = "Day 28 Track 2 — modern AI platform integration lab (10 integration points)"
+readme = "README.md"
 requires-python = ">=3.11,<3.13"
-dependencies = ["pydantic==2.12.5", "pyyaml==6.0.3"]
+
+# The base install is the *serving* surface: contracts, telemetry, metrics and
+# the clients the API needs. Heavier engines (Spark, Airflow, Feast) live in
+# extras because they run in their own containers with their own images, and
+# forcing them into one virtualenv would make the resolver fight itself.
+dependencies = [
+  "confluent-kafka==2.15.0",
+  "fastapi==0.141.1",
+  "httpx==0.28.1",
+  "opentelemetry-api==1.44.0",
+  "opentelemetry-sdk==1.44.0",
+  "opentelemetry-exporter-otlp-proto-grpc==1.44.0",
+  "opentelemetry-instrumentation-fastapi==0.65b0",
+  "opentelemetry-instrumentation-httpx==0.65b0",
+  "prometheus-client==0.26.0",
+  "pydantic==2.12.5",
+  "pyyaml==6.0.3",
+  "typer==0.27.2",
+  "uvicorn==0.52.4",
+]
 
 [project.optional-dependencies]
-dev = ["pytest==9.1.1", "ruff==0.16.5"]
+# IP05 — vector store. fastembed ships ONNX runtimes, so it stays out of the
+# base install for anything that only needs to talk to Qdrant.
+retrieval = [
+  "qdrant-client==1.19.0",
+  "fastembed==0.8.0",
+]
+
+# IP03/IP06 — lakehouse reads and the model registry client. `deltalake` reads
+# the transaction log without a JVM; Spark does the writes.
+ml = [
+  "deltalake==1.6.3",
+  "mlflow==3.15.2",
+  "pyarrow==25.0.1",
+  "pandas==2.3.3",
+]
+
+# NOTE — Feast, Spark and Airflow are deliberately NOT extras here.
+#
+# feast==0.66.0 caps prometheus-client<0.25, and pyspark/airflow each pull a
+# large, opinionated dependency tree. Putting them in this project's resolution
+# universe would drag the serving stack onto their constraints for no benefit,
+# because none of them are imported by lab28_platform: Spark writes Delta from
+# its own image, Airflow orchestrates from its own image, and online features
+# are read from the Feast feature *server* over HTTP.
+#
+# Their exact pins live with the image that runs them:
+#   docker/feast/requirements.txt
+#   docker/spark/requirements.txt
+#   docker/airflow/requirements.txt
+
+# The fast suite imports the serving surface, which reaches qdrant-client and
+# mlflow at module scope — so `dev` pulls both extras rather than making every
+# test guard its imports. It still runs offline: the clients are constructed,
+# never called.
+dev = [
+  "lab28-platform[retrieval,ml]",
+  "pytest==9.1.1",
+  "pytest-cov==7.0.0",
+  "ruff==0.16.5",
+]
+
+# Everything the live integration journeys need to talk to the running stack.
+integration = [
+  "pytest==9.1.1",
+  "pytest-timeout==2.5.0",
+  "qdrant-client==1.19.0",
+  "deltalake==1.6.3",
+  "mlflow==3.15.2",
+  "pyarrow==25.0.1",
+]
+
+[project.scripts]
+lab28 = "lab28_platform.cli:main"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/lab28_platform"]
 
 [tool.pytest.ini_options]
+# `tests` is the fast suite: pure contract and logic checks, no network.
+# `integration-tests` is the live suite and is opt-in — it is never collected by
+# a bare `pytest`, so a green default run can never be mistaken for proof that
+# the platform is up.
 testpaths = ["tests"]
+# src-layout without depending on an editable install. macOS sets UF_HIDDEN on
+# files written into site-packages under some sync tools, and CPython's site.py
+# silently skips a hidden .pth — which makes the editable install vanish with no
+# error. Naming the source root here is one line and cannot fail that way.
 pythonpath = ["src"]
+addopts = "-ra --strict-markers"
+markers = [
+  "matrix(id): implements a test id declared in contracts/integration-matrix.yaml",
+  "integration: requires the full stack to be running",
+  "gpu: requires a real GPU-backed vLLM endpoint",
+  "langsmith: requires LANGSMITH_API_KEY",
+  "kubernetes: requires a running kind cluster",
+  "offline: static integration-contract check that does not require a running stack",
+]
 
 [tool.ruff]
-target-version = "py311"
 line-length = 100
+target-version = "py311"
+extend-exclude = ["*.ipynb", "student-template"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "B", "UP", "SIM", "RUF"]
+
+[tool.ruff.lint.per-file-ignores]
+# Live tests assert on real infrastructure; long, explicit assertions read
+# better than helper indirection.
+"integration-tests/*" = ["E501"]

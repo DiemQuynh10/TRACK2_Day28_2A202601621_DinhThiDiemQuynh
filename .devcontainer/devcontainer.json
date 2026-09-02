@@ -1,0 +1,30 @@
+{
+  "name": "Lab 28 browser fallback",
+  "build": {
+    "dockerfile": "Dockerfile",
+    "context": ".."
+  },
+  "features": {
+    "ghcr.io/devcontainers/features/docker-in-docker:2": {}
+  },
+  "hostRequirements": {
+    "cpus": 2,
+    "memory": "8gb",
+    "storage": "16gb"
+  },
+  "postCreateCommand": "uv sync --python 3.11 --extra dev",
+  "forwardPorts": [8000, 9090],
+  "portsAttributes": {
+    "8000": {
+      "label": "Lab 28 API"
+    },
+    "9090": {
+      "label": "Prometheus"
+    }
+  },
+  "customizations": {
+    "vscode": {
+      "extensions": ["ms-python.python", "ms-toolsai.jupyter"]
+    }
+  }
+}
