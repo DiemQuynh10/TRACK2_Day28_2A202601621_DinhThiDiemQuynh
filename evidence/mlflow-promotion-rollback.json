@@ -1,0 +1,38 @@
+{
+  "model_name": "lab28-rag-release",
+  "current_champion_version": "4",
+  "current_champion_run_id": "be7b0405bcc84c3e93b83d317affcb92",
+  "all_versions": [
+    {
+      "version": "1",
+      "run_id": "84b9e51141044c3ab6aa049f25673b97",
+      "status": "READY",
+      "aliases": []
+    },
+    {
+      "version": "2",
+      "run_id": "fafb6bc1aa114c61a8c59087db8e4828",
+      "status": "READY",
+      "aliases": []
+    },
+    {
+      "version": "3",
+      "run_id": "0df40737eb164e99b444a0d5e61fd799",
+      "status": "READY",
+      "aliases": []
+    },
+    {
+      "version": "4",
+      "run_id": "be7b0405bcc84c3e93b83d317affcb92",
+      "status": "READY",
+      "aliases": []
+    },
+    {
+      "version": "5",
+      "run_id": "50561d36b1504b91bbd393ae1300d529",
+      "status": "READY",
+      "aliases": []
+    }
+  ],
+  "note": "Promotion/rollback demo: released v5 as champion, then `lab28 rollback` moved champion v5 -> v4. Alias moves without code or image change."
+}

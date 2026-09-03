@@ -1,0 +1,15 @@
+{
+  "model_name": "lab28-rag-release",
+  "version": "4",
+  "run_id": "be7b0405bcc84c3e93b83d317affcb92",
+  "alias": "champion",
+  "tags": {
+    "lab28.prompt_version": "it-j3-e770e2d8",
+    "lab28.vllm_model_id": "Qwen/Qwen3-1.7B",
+    "lab28.embedding_model_id": "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2@faf4aa4225822f3bc6376869cb1164e8e3feedd0",
+    "lab28.delta_version": "9",
+    "lab28.qdrant_collection": "lab28_documents",
+    "lab28.feature_service": "asker_serving_v1"
+  },
+  "promoted_from": "2"
+}

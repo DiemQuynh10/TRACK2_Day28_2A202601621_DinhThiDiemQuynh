@@ -1,0 +1,29 @@
+{
+  "trace_id": "e299fafd3f0e4f5aa8e1d0ea41f267dc",
+  "span_count": 11,
+  "span_names": [
+    "POST /api/v1/feedback",
+    "POST /api/v1/feedback http receive",
+    "POST /api/v1/feedback http send",
+    "lab28.airflow.dag",
+    "lab28.api.ingest",
+    "lab28.gateway.request",
+    "lab28.kafka.consume",
+    "lab28.kafka.produce",
+    "lab28.spark.delta_merge"
+  ],
+  "services": [
+    "lab28-airflow",
+    "lab28-api",
+    "lab28-gateway"
+  ],
+  "required_ingest_spans_present": [
+    "lab28.gateway.request",
+    "lab28.api.ingest",
+    "lab28.kafka.produce",
+    "lab28.kafka.consume",
+    "lab28.airflow.dag",
+    "lab28.spark.delta_merge"
+  ],
+  "note": "Golden-path trace: one request gateway->api->kafka->airflow->spark. Serving-path spans (ask/feast/qdrant/mlflow/vllm) need a real vLLM (IP07 gate)."
+}
