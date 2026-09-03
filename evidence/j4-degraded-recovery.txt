@@ -1,0 +1,15 @@
+integration-tests/test_j4_degraded_recovery.py::test_losing_the_feature_store_does_not_change_the_rotation_verdict PASSED [  7%]
+integration-tests/test_j4_degraded_recovery.py::test_the_feature_store_outage_reads_as_degraded_not_broken SKIPPED [ 15%]
+integration-tests/test_j4_degraded_recovery.py::test_an_answer_is_still_served_without_features SKIPPED [ 23%]
+integration-tests/test_j4_degraded_recovery.py::test_losing_the_vector_store_fails_the_readiness_check_closed PASSED [ 30%]
+integration-tests/test_j4_degraded_recovery.py::test_the_gateway_stops_routing_to_a_pod_that_is_not_ready SKIPPED [ 38%]
+integration-tests/test_j4_degraded_recovery.py::test_a_pod_out_of_rotation_still_answers_a_direct_request SKIPPED [ 46%]
+integration-tests/test_j4_degraded_recovery.py::test_one_unparseable_message_does_not_fail_the_batch PASSED [ 53%]
+integration-tests/test_j4_degraded_recovery.py::test_the_unparseable_message_is_parked_rather_than_dropped PASSED [ 61%]
+integration-tests/test_j4_degraded_recovery.py::test_the_good_record_in_the_same_batch_still_reached_the_lakehouse PASSED [ 69%]
+integration-tests/test_j4_degraded_recovery.py::test_replay_puts_a_parked_event_back_on_its_original_topic PASSED [ 76%]
+integration-tests/test_j4_degraded_recovery.py::test_replay_refuses_to_reinject_a_payload_it_cannot_parse PASSED [ 84%]
+integration-tests/test_j4_degraded_recovery.py::test_the_replayed_event_does_not_duplicate_the_row PASSED [ 92%]
+integration-tests/test_j4_degraded_recovery.py::test_the_platform_ends_where_it_started PASSED [100%]
+SKIPPED [4] integration-tests\conftest.py:198: gpu gate: endpoint is not a verifiable vLLM build — unreachable: ConnectError
+================== 9 passed, 4 skipped in 132.34s (0:02:12) ===================
