@@ -97,32 +97,71 @@ nền của Envoy (2s/lần) chen giữa 2 lần đo — chạy lại pass ngay,
 - **J5 Trace/metrics continuity:** trace ID và golden signal giữ xuyên hệ thống;
   rate-limit, Prometheus target, độ phủ span đều đạt.
 
-## 4b. Trade-offs & production gaps
+## 4. Ghi chú sự cố (đã tạo thật)
 
-Gợi ý các điểm cần bàn (theo `docs/demo-runbook.md` mục 8 và `LAB28.md`):
+Chi tiết + bảng số liệu: `evidence/incident-feast-outage.md`.
 
-- **Spark Connect vs spark-submit:** vì sao lab chọn Connect (Airflow image gọn, driver
-  là service khởi động lại độc lập). Gap: single driver = SPOF, chưa có HA.
-- **Idempotency key derive từ content hash:** an toàn khi client không gửi key. Gap: hai
-  phản hồi khác nhau nhưng trùng nội dung sẽ bị coi là một.
-- **Feast file offline + sqlite online:** đủ cho lab. Gap production: cần online store
-  thật (Redis/DynamoDB), materialization theo lịch, freshness SLA.
-- **vLLM `require_real`:** gate từ chối mock. Gap: cần quản lý GPU quota, tunnel bảo mật,
-  cold-start cache.
-- **Gateway rate limit ở Envoy (local_rate_limit):** đơn giản. Gap: chưa có auth thật,
-  global rate limit, WAF.
-- **`degraded` cho phép trả lời thiếu feature/context:** cân bằng availability vs chất
-  lượng. Cần định nghĩa SLO rõ khi nào từ chối thay vì degrade.
-- **Không commit `.lab28/`, evidence, weights:** đúng; secret chỉ qua env.
+- **Sự cố:** `docker compose stop feast` (feature store chết).
+- **Dấu hiệu:** `/ready` chuyển `degraded`, `feast: unreachable: ConnectError`; `/api/v1/ask`
+  vẫn trả **200** (đường degraded); Delta `feedback` version giữ nguyên **14**.
+- **Nguyên nhân:** container Feast dừng → API ném `ConnectError` → `probe_feast` trả
+  `ready=False, mandatory=False` → `readiness_status` chỉ thấy probe không bắt buộc fail
+  → `degraded`, **không** `not_ready` → gateway KHÔNG loại pod khỏi rotation.
+- **Không mất dữ liệu:** Feast là online store phái sinh từ Delta, không phải nguồn ghi.
+  Delta version không đổi; feature được bù ở lần materialize kế tiếp.
+- **Khôi phục:** `docker compose start feast` → healthy sau ~25s → `/ready` tự hết báo Feast.
+- **Tự động hoá:** `test_j4_degraded_recovery.py` (9 pass) kiểm tra thêm: Qdrant chết →
+  readiness **fail-closed** (`not_ready`, vì Qdrant mandatory); bản tin hỏng → parked DLQ,
+  bản tin tốt cùng batch vẫn vào lakehouse; replay không nhân đôi;
+  `test_the_platform_ends_where_it_started` — trạng thái cuối = trạng thái đầu.
 
-## 4. Đóng góp  *(làm cá nhân)*
+## 5. Reflection
 
-Toàn bộ do Đinh Thị Diễm Quỳnh thực hiện: 4 hàm integration, chạy kiểm thử, kiểm tra
-cấu hình, chuẩn bị demo/evidence.
+### Điều khó nhất
+Phân biệt `not_ready` vs `degraded` ở `readiness_status`. Ban đầu tôi định coi mọi probe
+fail là `not_ready`, nhưng đọc `readiness.py` thấy verdict này **loại pod khỏi rotation của
+gateway**. Nếu Feast (cold cache, không phải lỗi nền tảng) cũng đẩy pod ra thì cả cụm mất
+khả năng phục vụ vì một thứ đường request sống được thiếu nó. Chìa khoá là trường
+`mandatory` trên `Probe` — chỉ probe bắt buộc fail mới `not_ready`.
+
+Việc thứ hai khó là chạy được stack thật: mạng nhà mất gói 100%, phải chuyển sang 4G và
+kéo 15 image **tuần tự** (kéo song song làm `auth.docker.io` timeout TLS).
+
+### Trade-off đã chọn
+- **`dedupe_latest` sắp xếp kết quả theo key** dù tốn thêm một lần sort. Đổi lại kết quả
+  deterministic → `ProcessedBatchEvent` byte-identical khi replay → IT-J2 kiểm tra được.
+  Nếu chỉ cần đúng "1 dòng/key" thì không cần sort.
+- **Bỏ hẳn header `traceparent` khi không có trace** thay vì gửi chuỗi rỗng. Chuỗi rỗng
+  hợp lệ về mặt "có header" nhưng là W3C traceparent sai định dạng → consumer parse lỗi và
+  làm đứt trace. Thà thiếu header còn hơn header rác.
+- **Lấy `FEATURE_REFS` từ `contracts.py`** thay vì viết lại danh sách 4 feature. Một nguồn
+  sự thật → registry và request không lệch nhau.
+
+### Điều sẽ cải tiến
+- Spark Connect hiện là **single driver = SPOF**; production cần HA hoặc fallback job.
+- `idempotency_key` derive từ hash nội dung: hai phản hồi khác nhau nhưng trùng text sẽ bị
+  gộp làm một — nên thêm timestamp/nonce vào khoá.
+- Feast dùng file offline + sqlite online — production cần Redis/DynamoDB + materialization
+  theo lịch + freshness SLA có alert.
+- Gateway mới có `local_rate_limit` — thiếu auth thật, global rate limit, WAF.
+- IP07 chưa chạy được thật (không GPU) — cần nối Kaggle T4 theo `KAGGLE_GPU_EXTENSION.md`
+  để đóng nốt.
+
+## 6. Vai trò đã đi qua (làm cá nhân)
+
+Theo `docs/team-role-cards.md`, một mình đi đủ 5 vai:
+
+| Vai | Phần đã làm |
+|---|---|
+| **Ingestion & Orchestration** (IP01–02) | `event_headers` (key + traceparent qua Kafka); xác minh 49 bản tin `data.raw` giữ header; DAG `lab28_ingestion_pipeline` chạy 4/4 task; DLQ replay (J4) |
+| **Data & ML** (IP03–04–06) | `dedupe_latest` (nguồn MERGE replay-safe); `feast_online_request`; xác minh Delta 10 version toàn MERGE + time-travel; Feast phục vụ `delta_version`; MLflow promote v5 → rollback về v4 |
+| **Serving & Retrieval** (IP05–07) | Qdrant hybrid RRF, point ID = UUIDv5(doc_id); grounding trong J1; IP07 ghi `UNVERIFIED` do không GPU |
+| **Platform & Observability** (IP08–10) | `readiness_status` (semantics not_ready/degraded/ready); gateway 200 + 429; Prometheus 9/10 target UP; Grafana dashboard; 1 trace ID xuyên hệ thống (Jaeger) |
+| **Presenter / Incident Commander** | Bộ evidence 17 file + 11 ảnh; ghi chú sự cố Feast (mục 4); runbook demo (mục 7) |
 
 ---
 
-## 5. Runbook chạy phần live (khi có máy đủ RAM + mạng ổn)
+## 7. Runbook chạy phần live (khi có máy đủ RAM + mạng ổn)
 
 ```bash
 git switch ca-nhan-quynh
